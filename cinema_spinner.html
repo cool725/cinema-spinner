@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Film Countdown</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        overflow: hidden;
+        background: url("https://i.ibb.co/K2WVyM2/square1.png"); /* Add your film reel background image */
+        background-size: cover;
+        position: relative;
+      }
+
+      body::before,
+      body::after {
+        content: "";
+        position: absolute;
+        background-color: black;
+      }
+
+      body::before {
+        width: 100%;
+        height: 2px;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+      }
+
+      body::after {
+        height: 100%;
+        width: 2px;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .film-border {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 250px;
+        height: 250px;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        z-index: 1;
+      }
+
+      .film-container {
+        position: relative;
+        color: black;
+        font-size: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 200px;
+        height: 200px;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        z-index: 2;
+      }
+
+      .film-reel {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0.6;
+        z-index: -1;
+        /* Adding x and y axes lines */
+        &::before,
+        &::after {
+          content: "";
+          position: absolute;
+          background-color: black;
+        }
+
+        &::before {
+          width: 100%;
+          height: 2px;
+          top: 50%;
+          left: 0;
+          transform: translateY(-50%);
+        }
+
+        &::after {
+          height: 100%;
+          width: 2px;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+      }
+
+      @keyframes countdownAnimation {
+        0% {
+          opacity: 0;
+        }
+        20% {
+          opacity: 1;
+        }
+        80% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="film-border">
+      <div class="film-container">
+        <div class="film-reel"></div>
+        <div class="countdown">20</div>
+      </div>
+    </div>
+
+    <div style="position: absolute">
+      <canvas id="myCanvas" width="2000" height="2000"></canvas>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      // You can use JavaScript to update the countdown number
+      const countdownElement = document.querySelector(".countdown");
+      const initialCountValue = 200;
+      let countdownValue = initialCountValue;
+
+      const c = document.getElementById("myCanvas");
+      const ctx = c.getContext("2d");
+      const canvasSize = 2000;
+
+      const centerX = canvasSize / 2; // Adjust as needed
+      const centerY = canvasSize / 2; // Adjust as needed
+      const radius = canvasSize * Math.sqrt(2);
+
+      const countdownInterval = setInterval(() => {
+        countdownElement.textContent = parseInt(countdownValue / 10);
+
+        ctx.clearRect(0, 0, c.width, c.height); // Clear the canvas for a new arc
+        ctx.beginPath();
+
+        const startAngle = -Math.PI / 2; // Start angle (90 degrees)
+        const endAngle =
+          (Math.PI * 2 * (initialCountValue - countdownValue)) /
+            initialCountValue +
+          startAngle;
+
+        // Move to the center of the canvas
+        ctx.moveTo(centerX, centerY);
+
+        // Draw a line to the starting point of the arc
+        // ctx.lineTo(centerX + radius * Math.cos(startAngle), centerY + radius * Math.sin(startAngle));
+        ctx.lineTo(
+          centerX + radius * Math.cos(endAngle),
+          centerY + radius * Math.sin(endAngle)
+        );
+
+        // Draw the arc
+        ctx.arc(centerX, centerY, radius, endAngle, startAngle);
+        // ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+
+        // Draw a line back to the center of the canvas
+        ctx.lineTo(centerX, centerY);
+
+        // Set the fill style to red
+        ctx.fillStyle = "#ffffff44";
+        ctx.strokeStyle = "#ffffff44";
+
+        // Fill the sector with the chosen color
+        ctx.fill();
+
+        // Stroke the arc
+        ctx.stroke();
+
+        countdownValue--;
+
+        if (countdownValue < 0) {
+          clearInterval(countdownInterval);
+          document.querySelector("#myCanvas").remove();
+        }
+      }, 100);
+    </script>
+  </body>
+</html>
