@@ -844,7 +844,9 @@ input.invalid {
             $("#canvas-container").show();
             $("html").attr("id", "spinner-html");
 
-            startSpinner();
+            if (data.GroupMosaicstyle === st1) {
+                startSpinner();
+            }
           
             var t = data;
             $.ajax({
