@@ -116,20 +116,20 @@ if (isset($_POST["yourEmail"])) {
     if (imagecreatefromwebp($filename)) {
         $iswebp = 1;
     }
-//echo "Etape 1";
+    //echo "Etape 1";
     $isjpeg = 0;
     if (imagecreatefromjpeg($filename)) {
         $isjpeg = 1;
     }
-//echo "Etape 2";
+    //echo "Etape 2";
     //$pathMosaic =$imageFileType;
     $uploadOk = 0;
-//foreach ($_POST as $key => $value)
+    //foreach ($_POST as $key => $value)
     //        echo $key.'='.$value.'<br />';
 
-//echo $pathMosaic;
+    //echo $pathMosaic;
 
-//var_dump($_POST);
+    //var_dump($_POST);
     // echo "Post OK";
     $prospectName = "Empty";
     $prospectEmail = "Empty";
@@ -150,13 +150,13 @@ if (isset($_POST["yourEmail"])) {
     if (!empty($_POST["yourVille"])) {
         $prospectVille = str_replace(' ', '', $_POST["yourVille"]);
     }
-   if (!empty($_POST["yourLargeur"])) {
+    if (!empty($_POST["yourLargeur"])) {
         $prospectLargeur = str_replace(' ', '', $_POST["yourLargeur"]);
     }
-   if (!empty($_POST["yourHauteur"])) {
+    if (!empty($_POST["yourHauteur"])) {
         $prospectHauteur = str_replace(' ', '', $_POST["yourHauteur"]);
     }
-	
+
     //echo $prospectName."-";
     //echo $prospectEmail."-";
     //echo $prospectTel."-";
@@ -182,7 +182,7 @@ if (isset($_POST["yourEmail"])) {
                 break;
         }
     }
-//    echo $mosaicStyle;
+    //    echo $mosaicStyle;
 
     $yourProject = "1";
     if (isset($_POST['GroupVotreprojet'])) {
@@ -210,8 +210,8 @@ if (isset($_POST["yourEmail"])) {
                 break;
         }
     }
-	
-	$yourPosition = "Mur";
+
+    $yourPosition = "Mur";
     if (isset($_POST['GroupPosition'])) {
         switch ($_POST['GroupPosition']) {
             case 'po1':
@@ -222,20 +222,20 @@ if (isset($_POST["yourEmail"])) {
                 break;
         }
     }
-//    echo $yourProject;
+    //    echo $yourProject;
     $colorJoint = "4"; // Valeur par défaut
     if (isset($_POST['groutColorJoint'])) {
         $colorJoint = $_POST['groutColorJoint'];
     }
-	$lang_flag = "en";
-//    echo $colorJoint;
+    $lang_flag = "en";
+    //    echo $colorJoint;
     $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
     $image_type = $check[2];
 
     // echo '<br /><br /><br />TypeT'.$image_type.'T';
 
     if (($isjpeg == 1) or ($iswebp == 1) or (in_array($image_type, array(IMAGETYPE_JPEG, 2, 18, IMAGETYPE_PNG, IMAGETYPE_BMP, IMAGETYPE_TIFF_II, IMAGETYPE_TIFF_MM, IMAGETYPE_JP2)))) {
-//       echo 'Step1';
+        //       echo 'Step1';
         if ($check !== false) {
             //echo 'Step2';
             if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
@@ -250,9 +250,9 @@ if (isset($_POST["yourEmail"])) {
                 //            $res = system('/var/www/cgi-bin/qWebAppMagicMosaic -platform offscreen '.$target_dir1.' '.$randomName.' '.$mosaicStyle.' '.$yourProject.' '.$myMobile.' '.$myPlatform.' '.$myBrowser.' '.$ipaddress);
                 $res = system('/var/www/cgi-bin/qWebAppMagicMosaic2 -platform offscreen ' . $target_dir1 . ' ' . $randomName . ' ' . $mosaicStyle . ' ' . $yourProject . ' ' . $myMobile . ' ' . $myPlatform . ' ' . $myBrowser . ' ' . $ipaddress . ' ' . $prospectName . ' ' . $prospectEmail . ' ' . $prospectTel . ' ' . $prospectVille . ' ' . $colorJoint . ' ' . $lang_flag . ' ' . $prospectLargeur . ' ' . $prospectHauteur . ' ' . $yourPosition);
                 $pathMosaic = file_get_contents('Mosaiques/' . $randomName);
-				$pathMosaic2 = str_replace('Mockup', 'Mosaic', $pathMosaic);
+                $pathMosaic2 = str_replace('Mockup', 'Mosaic', $pathMosaic);
                 $pieces = explode("_", $pathMosaic);
-               // $sourceImg = "Mosaiques/Image_" . $pieces[1] . "_" . $pieces[2] . "_" . $pieces[3] . ".png";
+                // $sourceImg = "Mosaiques/Image_" . $pieces[1] . "_" . $pieces[2] . "_" . $pieces[3] . ".png";
                 // var_dump($pathMosaic);
                 $infoID = $prospectName . '  ' . $prospectEmail . '  ' . $prospectTel . '  ' . $prospectVille;
                 file_put_contents('Mosaiques/ID' . $ipaddress . '.txt', ''); // Vide
@@ -285,12 +285,9 @@ if (isset($_POST["yourEmail"])) {
             $uploadOk = 0;
         }
     }
-
-
-
 }
 if (isset($_POST["submitAvis"])) {
-//    echo "Post OK";
+    //    echo "Post OK";
     $texteAvis = "Empty";
     if (!empty($_POST["monAvis"])) {
         $texteAvis = $_POST["monAvis"];
@@ -839,13 +836,22 @@ input.invalid {
         if (event.blob) {
             data.append("fileToUpload", event.blob);
   
-            // Show spinner before making the AJAX request
-            $("#spinner").show();
-            $("#canvas-container").show();
-            $("html").attr("id", "spinner-html");
-
-            if (data.GroupMosaicstyle === st1) {
+            
+            if (document.querySelector(`input[name="GroupMosaicstyle"]:checked`).value === "st1") {
+                // Show spinner before making the AJAX request
+                $("#spinner").show();
+                $("#canvas-container").show();
+                $("html").attr("id", "spinner-html");
+                
                 startSpinner();
+            } else {
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                }
+                
+                $("#spinner").hide();
+                $("#canvas-container").hide();
+                $("html").removeAttr("id");
             }
           
             var t = data;
@@ -858,6 +864,7 @@ input.invalid {
                 type: "POST",
                 success: function (data) {
                     // Hide spinner after receiving the response
+                    
                     $("#spinner").hide();
                     $("#canvas-container").hide();
                     $("html").removeAttr("id");
@@ -866,9 +873,9 @@ input.invalid {
                 },
                 error: function () {
                   // Hide spinner in case of an error
-                  $("#spinner").hide();
-                  $("#canvas-container").hide();
-                  $("html").removeAttr("id");
+                    $("#spinner").hide();
+                    $("#canvas-container").hide();
+                    $("html").removeAttr("id");
                 },
             });
         }
